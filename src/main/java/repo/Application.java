@@ -29,10 +29,6 @@ public class Application extends ResourceConfig {
 
     public static final String DEFAULT_CREDENTIALS_FILENAME = "WEB-INF/users.txt";
 
-    public static final String ROLE_WRITE = "write";
-    public static final String ROLE_READ = "read";
-    public static final String ROLE_LIST = "list";
-
     private static File CREDENTIALS = new File(
             System.getProperty(PROPERTY_CREDENTIALS_FILENAME, DEFAULT_CREDENTIALS_FILENAME));
 
@@ -62,17 +58,22 @@ public class Application extends ResourceConfig {
 
                     final String[] splits = line.split(":");
 
-                    if (splits.length != 3) {
-                        LOGGER.warn("{}:{}: syntax error", file, lineNo);
-                        continue;
+                    final String[] roles = splits[2].split(",");
+
+                    String[] modules = new String[0];
+                    if (splits.length > 3) {
+                        modules = splits[3].split(",");
                     }
 
-                    final String[] roles = splits[2].split(",");
                     final User.Builder user = new User.Builder()
                             .credentials(splits[0], splits[1]);
 
                     for (String role : roles) {
                         user.role(role.trim());
+                    }
+
+                    for (String module : modules) {
+                        user.module(module.trim());
                     }
 
                     users.add(user.build());

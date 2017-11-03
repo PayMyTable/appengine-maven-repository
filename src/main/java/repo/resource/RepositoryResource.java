@@ -40,12 +40,9 @@ import javax.ws.rs.core.UriInfo;
 
 import repo.Application;
 import repo.annotation.CacheControl;
+import repo.constants.Roles;
 import repo.model.Directory;
 import repo.model.FileContext;
-
-import static repo.Application.ROLE_LIST;
-import static repo.Application.ROLE_READ;
-import static repo.Application.ROLE_WRITE;
 
 @Path("/")
 @Singleton
@@ -60,7 +57,7 @@ public class RepositoryResource {
 
     @GET
     @Template(name= "/list.mustache")
-    @RolesAllowed(value={ROLE_WRITE, ROLE_READ, ROLE_LIST})
+    @RolesAllowed(value={Roles.WRITE, Roles.READ})
     @CacheControl(property = Application.PROPERTY_CACHE_CONTROL_LIST)
     @Produces(MediaType.TEXT_HTML)
     public Directory list(@Context UriInfo uriInfo) throws IOException {
@@ -70,7 +67,7 @@ public class RepositoryResource {
     @GET
     @Path("{dir: .*[/]}")
     @Template(name= "/list.mustache")
-    @RolesAllowed(value={ROLE_WRITE, ROLE_READ, ROLE_LIST})
+    @RolesAllowed(value={Roles.WRITE, Roles.READ})
     @CacheControl(property = Application.PROPERTY_CACHE_CONTROL_LIST)
     @Produces(MediaType.TEXT_HTML)
     public Directory list(@PathParam("dir") final String dir,
@@ -102,7 +99,7 @@ public class RepositoryResource {
 
     @GET
     @Path("{file: .*}")
-    @RolesAllowed(value={ROLE_WRITE, ROLE_READ})
+    @RolesAllowed(value={Roles.WRITE, Roles.READ})
     @CacheControl(property = Application.PROPERTY_CACHE_CONTROL_FETCH)
     public Response fetch(@PathParam("file") String file, @Context Request request) throws IOException {
 
@@ -137,7 +134,7 @@ public class RepositoryResource {
 
     @PUT
     @Path("{file: .*}")
-    @RolesAllowed(ROLE_WRITE)
+    @RolesAllowed(Roles.WRITE)
     public Response put(@PathParam("file") String file,
                         @HeaderParam(HttpHeaders.CONTENT_TYPE) String mimeType,
                         byte[] content) throws IOException {
